@@ -1,4 +1,4 @@
-$File = "<txt file fgoes here>"
+$File = "<txt file goes here>"
 $strComputers = Get-Content $File 
 
 foreach ($strComputer in $strComputers)
