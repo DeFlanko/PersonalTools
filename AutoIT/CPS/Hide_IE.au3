@@ -3,11 +3,11 @@
 ; AutoIT guidance from Erik Nelson
 ; Writen for Molina Healthcare, Inc.
 Opt("TrayIconHide", 1); Hide the System Tray Icon
-$val = Run("C:\Program Files (x86)\Internet Explorer\Iexplore.exe http://JBOSSSERVER:9080/centricityps_mhc/cps/","C:\Program Files (x86)\Internet Explorer",@SW_SHOWMINIMIZED); Open the IE window Minimized
+$val = Run("C:\Program Files (x86)\Internet Explorer\Iexplore.exe http://JBOSSSERVER:9080/centricityps/cps/","C:\Program Files (x86)\Internet Explorer",@SW_SHOWMINIMIZED); Open the IE window Minimized
 Sleep(3000); Wait 3 Seconds
-$handle = WinGetHandle("http://JBOSSSERVER:9080/centricityps_mhc/cps/ - Windows Internet Explorer"); Capture the IE Window's handle
+$handle = WinGetHandle("http://JBOSSSERVER:9080/centricityps/cps/ - Windows Internet Explorer"); Capture the IE Window's handle
 ;MsgBox(4096, "Handle is", $handle)
-$pid = ControlHide("http://JBOSSSERVER:9080/centricityps_mhc/cps/ - Windows Internet Explorer","",$handle); Hide the IE Window based on Handle ID
+$pid = ControlHide("http://JBOSSSERVER:9080/centricityps/cps/ - Windows Internet Explorer","",$handle); Hide the IE Window based on Handle ID
 WinWait("[CLASS:CentricityLogonDlg]"); Centricity Login Box opening up
 WinWaitClose("[CLASS:CentricityLogonDlg]"); Wait for the Login Window To close. 
 Sleep (20000); Wait...
