@@ -1,0 +1,3 @@
+Have you ever had the need for your webcam to be a TWAIN device?
+
+This is how you do it...
