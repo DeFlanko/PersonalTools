@@ -1,4 +1,4 @@
-$File = "C:\Scripts\DATA\PROD.txt"
+$File = "<txt file fgoes here>"
 $strComputers = Get-Content $File 
 
 foreach ($strComputer in $strComputers)
