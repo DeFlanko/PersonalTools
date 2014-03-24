@@ -1,8 +1,10 @@
 # To Suppress the Red Errors \\ Remove if you need to see errors. 
 $ErrorActionPreference = "SilentlyContinue"
 
+function RunCleanup ($strComputer)
+{
 # Script to resolve "User partition less than 1.5 GB" - remotly Clean PC's
-$strComputer = Read-Host "Enter the Server you wish to connect to"
+#$strComputer = Read-Host "Enter the Server you wish to connect to"
 
 # Add in a Time Stamp
 Write-Host "Start Time"
@@ -130,3 +132,68 @@ Write-Host -foregroundcolor Green "=============================================
 # Add in a Time Stamp
 Write-Host "End Time"
 (get-date).toString(‘HH:MM:ss mm-dd-yyyy’)
+}
+
+#Functions - Thank you Andy!
+function GetInput ($DefaultText = "",$LabelMessage = "Please enter the information in the space below:",$MultiLine = $true)
+{
+    $objForm = New-Object System.Windows.Forms.Form 
+    $objForm.Text = "Data Entry Form"
+    $objForm.Size = New-Object System.Drawing.Size(300,200) 
+    $objForm.StartPosition = "CenterScreen"
+
+    $objForm.KeyPreview = $True
+    If(!$MultiLine)
+    {
+        $objForm.Add_KeyDown({if ($_.KeyCode -eq "Enter") {$objForm.Close()}})
+    }
+    $objForm.Add_KeyDown({if ($_.KeyCode -eq "Escape") {$objForm.Close()}})
+
+    $OKButton = New-Object System.Windows.Forms.Button
+    $OKButton.Location = New-Object System.Drawing.Size(75,120)
+    $OKButton.Size = New-Object System.Drawing.Size(75,23)
+    $OKButton.Text = "OK"
+    $OKButton.Add_Click({$objForm.Close()})
+    $objForm.Controls.Add($OKButton)
+
+    $CancelButton = New-Object System.Windows.Forms.Button
+    $CancelButton.Location = New-Object System.Drawing.Size(150,120)
+    $CancelButton.Size = New-Object System.Drawing.Size(75,23)
+    $CancelButton.Text = "Cancel"
+    $CancelButton.Add_Click({$objForm.Close()})
+    $objForm.Controls.Add($CancelButton)
+
+    $objLabel = New-Object System.Windows.Forms.Label
+    $objLabel.Location = New-Object System.Drawing.Size(10,10) 
+    $objLabel.Size = New-Object System.Drawing.Size(280,40) 
+    $objLabel.Text = $LabelMessage
+    $objForm.Controls.Add($objLabel) 
+
+    $objTextBox = New-Object System.Windows.Forms.TextBox 
+    $objTextBox.Location = New-Object System.Drawing.Size(10,60) 
+    $objTextBox.Size = New-Object System.Drawing.Size(260,60)
+    If($MultiLine)
+    {
+        $objTextBox.multiline = $true
+        #$objTextBox.ScrollBars = $True
+    }
+    If($DefaultText.length -gt 0)
+    {
+        $objTextBox.Text = $DefaultText
+    }
+
+    $objForm.Controls.Add($objTextBox) 
+    $objForm.Topmost = $True
+    $objForm.Add_Shown({$objForm.Activate()})
+    [void] $objForm.ShowDialog()
+
+    $objTextBox.Text
+} 
+
+$ItemList = GetInput -LabelMessage "Input servers to process" -MultiLine $true
+$ItemList = $ItemList.Split()
+
+foreach ($Item in $ItemList)
+{
+    RunCleanup -strComputer $Item
+} 
