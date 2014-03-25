@@ -3,12 +3,10 @@ $ErrorActionPreference = "SilentlyContinue"
 
 function RunCleanup ($strComputer)
 {
-# Script to resolve "User partition less than 1.5 GB" - remotly Clean PC's
-#$strComputer = Read-Host "Enter the Server you wish to connect to"
 
 # Add in a Time Stamp
 Write-Host "Start Time"
-(get-date).toString(‘HH:MM:ss mm-dd-yyyy’)
+(get-date).toString(‘HH:mm:ss MM-dd-yyyy’)
 
 #Per Ricky
     $strFolder1 = "\\$strComputer\C$\inetpub\logs\LogFiles" 
@@ -131,10 +129,10 @@ Write-Host -foregroundcolor Green "=============================================
 
 # Add in a Time Stamp
 Write-Host "End Time"
-(get-date).toString(‘HH:MM:ss mm-dd-yyyy’)
+(get-date).toString(‘HH:mm:ss MM-dd-yyyy’)
 }
 
-#Functions - Thank you Andy!
+#Functions
 function GetInput ($DefaultText = "",$LabelMessage = "Please enter the information in the space below:",$MultiLine = $true)
 {
     $objForm = New-Object System.Windows.Forms.Form 
