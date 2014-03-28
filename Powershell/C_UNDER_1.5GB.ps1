@@ -4,14 +4,14 @@ $ErrorActionPreference = "SilentlyContinue"
 function RunCleanup ($strComputer)
 {
 
-# Static Locations
-    $strFileRepo = "mhcalbsysadpv01\SysAdmins\Scripts\Powershell_Scripts\Clean_C_Drive"
-
 # Add in a Time Stamp
 Write-Host "Start Time"
 (get-date).toString(‘HH:mm:ss MM-dd-yyyy’)
 
-#Per Ricky
+# Static Locations
+    $strFileRepo = "<Specify where you store the called files>"
+
+# Per Ricky
     $strFolder1 = "\\$strComputer\C$\inetpub\logs\LogFiles" 
     $strFolder2 = "\\$strComputer\C$\Temp"
     $strFolder3 = "\\$strComputer\C$\Windows\Temp"
