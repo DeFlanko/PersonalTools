@@ -1,37 +1,41 @@
 # To Suppress the Red Errors \\ Remove if you need to see errors. 
 $ErrorActionPreference = "SilentlyContinue"
+#$ErrorActionPreference = "Continue"
 
 function RunCleanup ($strComputer)
 {
-
 # Add in a Time Stamp
 Write-Host "Start Time"
 (get-date).toString(‘HH:mm:ss MM-dd-yyyy’)
 
 # Static Locations
-    $strFileRepo = "<Specify where you store the called files>"
+    $strFileRepo = "mhcalbsysadpv01\SysAdmins\Scripts\Powershell_Scripts\Clean_C_Drive"
 
-# Per Ricky
-    $strFolder1 = "\\$strComputer\C$\inetpub\logs\LogFiles" 
-    $strFolder2 = "\\$strComputer\C$\Temp"
-    $strFolder3 = "\\$strComputer\C$\Windows\Temp"
-    $strFolder4 = "\\$strComputer\C$\Windows\SoftwareDistribution\Download"
-    $strFolder5 = "\\$strComputer\C$\Windows\ProPatches\Patches"
+# Clean Files older than 0 Days
+    $strFolder_0_1 = "\\$strComputer\C$\Temp" 
+    $strFolder_0_2 = "\\$strComputer\C$\Windows\Temp"
+    $strFolder_0_3 = "\\$strComputer\C$\Windows\SoftwareDistribution\Download"
+    $strFolder_0_4 = "\\$strComputer\C$\Windows\ProPatches\Patches"
+        
+# Clean files older than 7 days
+    $strFolder_7_1 = "\\$strComputer\C$\ProgramData\Microsoft Visual Studio\10.0\TraceDebugging"
+    $strFolder_7_2 = "\\$strComputer\C$\inetpub\logs\LogFiles"
 
-# Per Phillip
-    #files older than 7 days
-    $strFolder6 = "\\$strComputer\C$\ProgramData\Microsoft Visual Studio\10.0\TraceDebugging"
-    #files older than 9 months
-    $strFolder7 = "\\$strComputer\C$\Windows\Installer"
+# Clean files older than 180 days
+    $strFolder_180_1 = "\\$strComputer\C$\Program Files\Microsoft SQL Server\100\Setup Bootstrap\Update Cache"
 
-# Per James	
-    $strFolder8 = "\\$strComputer\C$\`$Recycle.bin"
-    $strFolder9 = "\\$strComputer\C$\PerfLogs"
+# Clean files older than 270 days
+    $strFolder_270_1 = "\\$strComputer\C$\Windows\Installer"
+    
+# Clean files older than 365 days
+    $strFolder_365_1 = "\\$strComputer\C$\PerfLogs"
 
-# determine how far back we go based on current date
+# Determine how far back we go based on current date
     $curr_date = Get-Date
     $max_days_7 = "-7"
     $del_date_7 = $curr_date.AddDays($max_days_7)
+    $max_days_180 = "-180"
+    $del_date_180 = $curr_date.AddDays($max_days_180)    
     $max_days_270 = "-270"
     $del_date_270 = $curr_date.AddDays($max_days_270)
     $max_days_365 = "-365"
@@ -48,42 +52,46 @@ Write-Host -foregroundcolor Green "=============================================
 Write-Host -foregroundcolor Yellow "=======================================FILES TO BE CLEANED======================================"
 Write-Host -foregroundcolor Yellow "Now Identifying Sizes of Folders in $strComputer"
 
-# We identify the folders we want to Measure and their contents.
-$colItems1 = (Get-ChildItem $strFolder1 -recurse | Measure-Object -property length -sum )
-"$strFolder1 is {0:N2}" -f ($colItems1.sum / 1GB) + " GB"
-$colItems2 = (Get-ChildItem $strFolder2 -recurse | Measure-Object -property length -sum)
-"$strFolder2 is {0:N2}" -f ($colItems2.sum / 1GB) + " GB"
-$colItems3 = (Get-ChildItem $strFolder3 -recurse | Measure-Object -property length -sum)
-"$strFolder3 is {0:N2}" -f ($colItems3.sum / 1GB) + " GB"
-$colItems4 = (Get-ChildItem $strFolder4  -recurse | Measure-Object -property length -sum)
-"$strFolder4 is {0:N2}" -f ($colItems4.sum / 1GB) + " GB"
-$colItems5 = (Get-ChildItem $strFolder5 -recurse | Measure-Object -property length -sum)
-"$strFolder5 is {0:N2}" -f ($colItems5.sum / 1GB) + " GB"
-$colItems6 = (Get-ChildItem $strFolder6 -recurse | Measure-Object -property length -sum)
-"$strFolder6 is {0:N2}" -f ($colItems6.sum / 1GB) + " GB"
-$colItems7 = (Get-ChildItem $strFolder7 -recurse | Measure-Object -property length -sum)
-"$strFolder7 is {0:N2}" -f ($colItems7.sum / 1GB) + " GB"
-$colItems8 = (Get-ChildItem $strFolder8 -recurse | Measure-Object -property length -sum)
-"$strFolder8 is {0:N2}" -f ($colItems8.sum / 1GB) + " GB"
-$colItems9 = (Get-ChildItem $strFolder9 -recurse | Measure-Object -property length -sum)
-"$strFolder9 is {0:N2}" -f ($colItems9.sum / 1GB) + " GB"
+# Identify the folders we want to Measure and their contents.
+
+$colItems_0_1 = (Get-ChildItem $strFolder_0_1 -recurse | Measure-Object -property length -sum)
+"$strFolder_0_1 is {0:N2}" -f ($colItems_0_1.sum / 1GB) + " GB"
+$colItems_0_2 = (Get-ChildItem $strFolder_0_2 -recurse | Measure-Object -property length -sum)
+"$strFolder_0_2 is {0:N2}" -f ($colItems_0_2.sum / 1GB) + " GB"
+$colItems_0_3 = (Get-ChildItem $strFolder_0_3 -recurse | Measure-Object -property length -sum)
+"$strFolder_0_3 is {0:N2}" -f ($colItems_0_3.sum / 1GB) + " GB"
+$colItems_0_4 = (Get-ChildItem $strFolder_0_4 -recurse | Measure-Object -property length -sum)
+"$strFolder_0_4 is {0:N2}" -f ($colItems_0_4.sum / 1GB) + " GB"
+$colItems_7_1 = (Get-ChildItem $strFolder_7_1 -recurse | Measure-Object -property length -sum)
+"$strFolder_7_1 is {0:N2}" -f ($colItems_7_1.sum / 1GB) + " GB"
+$colItems_7_2 = (Get-ChildItem $strFolder_7_2 -recurse | Measure-Object -property length -sum )
+"$strFolder_7_2 is {0:N2}" -f ($colItems_7_2.sum / 1GB) + " GB"
+$colItems_180_1 = (Get-ChildItem $strFolder_180_1 -recurse | Measure-Object -property length -sum)
+"$strFolder_180_1 is {0:N2}" -f ($colItems_180_1.sum / 1GB) + " GB"
+$colItems_270_1 = (Get-ChildItem $strFolde_270_1 -recurse | Measure-Object -property length -sum)
+"$strFolder_270_1 is {0:N2}" -f ($colItems_270_1.sum / 1GB) + " GB"
+$colItems_365_1 = (Get-ChildItem $strFolder_365_1 -recurse | Measure-Object -property length -sum)
+"$strFolder_365_1 is {0:N2}" -f ($colItems_365_1.sum / 1GB) + " GB"
 
 
-#Now we sum up the totals -- This part is not shown // Also not too sure if its needed... 
+
+# Sum up the totals of the above
 
 $report = @(
-    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems1.sum / 1GB) }
-    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems2.sum / 1GB) }
-    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems3.sum / 1GB) }
-    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems4.sum / 1GB) }
-    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems5.sum / 1GB) }
-    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems6.sum / 1GB) }
-    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems7.sum / 1GB) }
-	New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems8.sum / 1GB) }
-    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems9.sum / 1GB) }
+    
+    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems_0_1.sum / 1GB) }
+    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems_0_2.sum / 1GB) }
+    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems_0_3.sum / 1GB) }
+    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems_0_4.sum / 1GB) }
+    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems_7_1.sum / 1GB) }
+    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems_7_2.sum / 1GB) }
+    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems_180_1.sum / 1GB) }
+    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems_270_1.sum / 1GB) }
+    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems_365_1.sum / 1GB) }
+    
 )
 
-# process: group by 'Item' then sum 'Average' for each group and create the Summed Output in GB
+# Process the report: group by 'Item' then sum 'Average' for each group and create the Summed Output in GB
 
  $report | Group-Object Item | %{
      New-Object psobject -Property @{
@@ -93,14 +101,15 @@ $report = @(
  }
 Write-Host -foregroundcolor Yellow "Files to be removed on $strComputer"
 # Identifying the Files to be deleted by using the "-WhatIf"
-Remove-Item $strFolder2\* -Recurse -Force -WhatIf
-Remove-Item $strFolder3\* -Recurse -Force -WhatIf
-Remove-Item $strFolder4\* -Recurse -Force -WhatIf
-Remove-Item $strFolder5\* -Recurse -Force -WhatIf
-Get-ChildItem $strFolder1 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_7 } | Remove-Item -Recurse -Force -WhatIf
-Get-ChildItem $strFolder6 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_7 } | Remove-Item -Recurse -Force -WhatIf
-Get-ChildItem $strFolder7 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_270 } | Remove-Item -Recurse -Force -WhatIf
-Get-ChildItem $strFolder9 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_365 } | Remove-Item -Recurse -Force -WhatIf
+Remove-Item $strFolder_0_1\* -Recurse -Force -WhatIf
+Remove-Item $strFolder_0_2\* -Recurse -Force -WhatIf
+Remove-Item $strFolder_0_3\* -Recurse -Force -WhatIf
+Remove-Item $strFolder_0_4\* -Recurse -Force -WhatIf
+Get-ChildItem $strFolder_7_2 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_7 } | Remove-Item -Recurse -Force -WhatIf
+Get-ChildItem $strFolder_7_1 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_7 } | Remove-Item -Recurse -Force -WhatIf
+Get-ChildItem $strFolder_270_1 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_270 } | Remove-Item -Recurse -Force -WhatIf
+Get-ChildItem $strFolder_365_1 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_365 } | Remove-Item -Recurse -Force -WhatIf
+Get-ChildItem $strFolder_180_1 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_180 } | Remove-Item -Recurse -Force -WhatIf
 
 Write-Host -foregroundcolor Yellow "================================================================================================"
 Write-Host -foregroundcolor Cyan "================================================================================================"
@@ -108,14 +117,15 @@ Write-Host -foregroundcolor Cyan "==============================================
  
 Write-Host -foregroundcolor Cyan "Now Cleaning Folders in $strComputer" 
 
-Remove-Item $strFolder2\* -Recurse -Force
-Remove-Item $strFolder3\* -Recurse -Force
-Remove-Item $strFolder4\* -Recurse -Force
-Remove-Item $strFolder5\* -Recurse -Force
-Get-ChildItem $strFolder1 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_7 } | Remove-Item -Recurse -Force
-Get-ChildItem $strFolder6 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_7 } | Remove-Item -Recurse -Force
-Get-ChildItem $strFolder7 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_270 } | Remove-Item -Recurse -Force
-Get-ChildItem $strFolder9 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_365 } | Remove-Item -Recurse -Force
+Remove-Item $strFolder_0_1\* -Recurse -Force
+Remove-Item $strFolder_0_2\* -Recurse -Force
+Remove-Item $strFolder_0_3\* -Recurse -Force
+Remove-Item $strFolder_0_4\* -Recurse -Force
+Get-ChildItem $strFolder_7_2 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_7 } | Remove-Item -Recurse -Force
+Get-ChildItem $strFolder_7_1 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_7 } | Remove-Item -Recurse -Force
+Get-ChildItem $strFolder_270_1 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_270 } | Remove-Item -Recurse -Force
+Get-ChildItem $strFolder_365_1 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_365 } | Remove-Item -Recurse -Force
+Get-ChildItem $strFolder_180_1 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_180 } | Remove-Item -Recurse -Force
 
 ### PROFILE CLEAN UP ###
 # Copy DelProf_2k8 to $strComputer
