@@ -3,7 +3,7 @@
 Some tools/scripts I use and wanted to share with the world. 
 
 
-### Disclaimer
+### Disclaimer (WTFPL)
 
 ```
       DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
