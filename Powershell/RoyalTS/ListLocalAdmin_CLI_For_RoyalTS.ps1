@@ -18,6 +18,7 @@ Write-Host -foregroundcolor Magenta "`t`tName: `t`t`t`tPowerShell: List Local Ad
 Write-Host -foregroundcolor Yellow "`t`tCommand: `t`t`tC:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
 Write-Host -foregroundcolor Yellow "`t`tArgumnets: `t`t`t<PATH_SAVED>\ListLocalAdmin_CLI_For_RoyalTS.ps1 `$URI$"
 Write-Host -foregroundcolor Yellow "`t`tWorking Directory: `tC:\Windows\System32\WindowsPowerShell\v1.0"
+Write-Host "Dont forget to check the box "Show in Favorites""
 Write-host "================================================="
 return
 }
