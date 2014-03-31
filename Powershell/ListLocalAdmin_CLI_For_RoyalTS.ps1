@@ -11,11 +11,12 @@ function Ping-Server {
 
 if ($args.Length -ne 1) {
 Write-host "================================================="
-Write-Host "`tUsage: "
-Write-Host -foregroundcolor Green "`t`t.\ListLocalAdmin.ps1"
-Write-Host "`tExample(s):"
-Write-Host -foregroundcolor Cyan "`t`t .\ListLocalAdmin.ps1"
-Write-Host -foregroundcolor Cyan "`t`t C:\Scripts\Tools\PS1\LocalAdmin\ .\ListLocalAdmin.ps1"
+Write-Host "Usage: In RoyalTS"
+Write-Host -foregroundcolor Green "`tCreate a New Task"
+Write-Host -foregroundcolor Cyan "`tSet the following:"
+Write-Host -foregroundcolor Yellow "`t`tCommand: `t`t`tC:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
+Write-Host -foregroundcolor Yellow "`t`tArgumnets: `t`t`t<PATH_SAVED>\ListLocalAdmin_CLI.ps1 $URI$"
+Write-Host -foregroundcolor Yellow "`t`tWorking Directory: `tC:\Windows\System32\WindowsPowerShell\v1.0"
 Write-host "================================================="
 return
 }
