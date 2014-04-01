@@ -23,8 +23,6 @@ Write-host "================================================="
 return
 }
 
-#Your domain
-$domain = "MMC"
 $strComputers = $args[0]
 
 foreach ($strComputer in $strComputers){
