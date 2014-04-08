@@ -80,11 +80,12 @@ Get-Content $args[0] | % {
 		'6.0.5840'='Windows Vista, Pre-RTM, Build 5840';
 		'6.0.6000.16386'='Windows Vista, RTM (Release to Manufacturing)';
 		'6.0.6000'='Windows Vista';
-		'6.0.6002'='Windows Vista, Service Pack 2';
+		#'6.0.6002'='Windows Vista, Service Pack 2';      
 		'6.0.6001'='Windows Server 2008';
+        	'6.0.6002'='Windows Server 2008';
 		#'6.1.7600.16385'='Windows 7, RTM (Release to Manufacturing)';
 		#'6.1.7601'='Windows 7';
-        	'6.1.7600'='Windows Server 2008 R2'
+       		'6.1.7600'='Windows Server 2008 R2'
 		'6.1.7600.16385'='Windows Server 2008 R2, RTM (Release to Manufacturing)';
 		'6.1.7601'='Windows Server 2008 R2, SP1';
 		'6.1.8400'='Windows Home Server 2011';
