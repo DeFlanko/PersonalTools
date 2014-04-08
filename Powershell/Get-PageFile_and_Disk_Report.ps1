@@ -196,6 +196,6 @@ ElseIf($OSVersion -eq "5.2.3790"){
         }
     }
 }
-$results | Export-Csv C:\Scripts\netbackup\Export.csv -Force -NoTypeInformation
-Import-CSV C:\Scripts\netbackup\Export.csv | Format-Table -Autosize
+$results | Export-Csv .\Export.csv -Force -NoTypeInformation
+Import-CSV .\Export.csv | Format-Table -Autosize
 }
