@@ -84,6 +84,7 @@ Get-Content $args[0] | % {
 		'6.0.6001'='Windows Server 2008';
 		#'6.1.7600.16385'='Windows 7, RTM (Release to Manufacturing)';
 		#'6.1.7601'='Windows 7';
+        	'6.1.7600'='Windows Server 2008 R2'
 		'6.1.7600.16385'='Windows Server 2008 R2, RTM (Release to Manufacturing)';
 		'6.1.7601'='Windows Server 2008 R2, SP1';
 		'6.1.8400'='Windows Home Server 2011';
