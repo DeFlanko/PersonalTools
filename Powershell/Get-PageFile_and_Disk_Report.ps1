@@ -1,27 +1,50 @@
-<#  
-    .Author
-    James DiBernardo
-    
-    .Version
-    1.0
-    
-    .Description
+<#
+  .Synopsis
+   One or more PSObjects with info about Page File Size, RAM, and Hard Disk to the Console window as well as to .\Export.csv
+
+  .Syntax
+    Get-PF_and_Disk_Report "Text file with list of servers"
+
+  .Description
     A Function to look to a List of Servers in a TXT file to return Page File Values and Hard Disk values.
-    
-    .Example
-    Get-PF_and_Disk_Report "LOCATION OF .TXT FILE"
-    
-    Output:
+
+  .Parameters
+    n/a
+
+  .Inputs
+    Get-PF_and_Disk_Report "Text file with list of servers"
+
+  .Outputs
+    Server          OS Version         PageFileLocation PageFileSize PhysicalMemory PF to Ram % Size of C - GB Free on C - GB % Free on C
+    ------          ----------         ---------------- ------------ -------------- ----------- -------------- -------------- -----------
+    Server1         Server 2008 R2 SP1 System Managed   1024         1023           0.0000 %    31.9           6.246          19.5800 %  
+    Server2         Server 2008 SP2    System Managed   4394         4094           0.0000 %    79.998         10.027         12.5300 %  
+    Server3         Server 2003 SP2    c:\pagefile.sys  7000         8191           85.4600 %   39.998         25.269         63.1800 %  
+    Server4         Server 2012        c:\pagefile.sys  6144         8191           75.0000 %   59.655         35.916         60.2100 %
+
+    and .\Export.csv witht he same above information.
+
+  .Notes
+    Author:       James DiBernardo
+    Name:         Get-PageFile_and_Disk_Report.ps1
+    Version:      1.0.0
+    DateCreated:  04012014
+    DateModified: 04102014
+    Site Repo:    https://github.com/DeFlanko/
+
+  .Examples
+    -------------------------- EXAMPLE 1 --------------------------
+    PS C:\> Get-PF_and_Disk_report "C:\Servers.txt"
 
     Server          OS Version         PageFileLocation PageFileSize PhysicalMemory PF to Ram % Size of C - GB Free on C - GB % Free on C
     ------          ----------         ---------------- ------------ -------------- ----------- -------------- -------------- -----------
     Server1         Server 2008 R2 SP1 System Managed   1024         1023           0.0000 %    31.9           6.246          19.5800 %  
     Server2         Server 2008 SP2    System Managed   4394         4094           0.0000 %    79.998         10.027         12.5300 %  
     Server3         Server 2003 SP2    c:\pagefile.sys  7000         8191           85.4600 %   39.998         25.269         63.1800 %  
-    Server4         Server 2012        c:\pagefile.sys  6144         8191           75.0000 %   59.655         35.916         60.2100 %  
+    Server4         Server 2012        c:\pagefile.sys  6144         8191           75.0000 %   59.655         35.916         60.2100 %
         
-    .Outputs
-    One or more PSObjects with info about Page File Size, RAM, and Hard Disk to the Console window as well as to .\Export.csv
+  .RelatedLinks
+    n/a
 #>
 
 function Get-PF_and_Disk_Report {
