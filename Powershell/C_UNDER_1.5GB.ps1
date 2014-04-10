@@ -1,3 +1,78 @@
+<#
+  .Synopsis
+    Cleans the C Drive of Remote Servers
+
+  .Syntax
+    Run the PS1 and paste the Server FQDN in the inputbox
+
+  .Description
+    For each server listed in the inputbox it goes though and cleans up the tempoary files on those machines.
+
+  .Parameters
+    n/a
+
+  .Inputs
+    Paste the FQDN of the server in the inputbox.
+
+  .Outputs
+    PS C:\Windows\system32> \\MHCALBSYSADPV01\SysAdmins\Scripts\Powershell_Scripts\Clean_C_Drive\C_UNDER_1.5GB.ps1
+    Start Time
+    10:47:14 04-10-2014
+    =======================================BEFORE CLEAN UP===========================================
+    Localhost C: has 28.0 GB free of 119.2 GB Total
+    =================================================================================================
+    =================================================================================================
+    Now Cleaning Folders in Localhost
+    Access denied on \\Localhost\C$\Windows\ProPatches\Patches
+    Now Copying DelProf_2k8 to Localhost
+    Now Running DelProf_2k8 on Localhost
+    Now Copying RemoveStaleVirusDefs.exe to Localhost
+    Now Running RemoveStaleVirusDefs.exe on Localhost
+    Now Cleaning Recyclebin on Localhost
+    =================================================================================================
+    ========================================AFTER CLEAN UP===========================================
+    Localhost C: has 28.1 GB free of 119.2 GB Total
+    =================================================================================================
+    End Time
+    10:47:17 04-10-2014
+    Time Spent: 00:00:02.7640000
+
+  .Notes
+    Author:       James DiBernardo
+    Name:         C_UNDER_1.5GB.ps1
+    Version:      1.0.0
+    DateCreated:  04012014
+    DateModified: 04102014
+    
+  .Examples
+    -------------------------- EXAMPLE 1 --------------------------
+
+    PS C:\Windows\system32> \\MHCALBSYSADPV01\SysAdmins\Scripts\Powershell_Scripts\Clean_C_Drive\C_UNDER_1.5GB.ps1
+    Start Time
+    10:47:14 04-10-2014
+    =======================================BEFORE CLEAN UP===========================================
+    Localhost C: has 28.0 GB free of 119.2 GB Total
+    =================================================================================================
+    =================================================================================================
+    Now Cleaning Folders in Localhost
+    Access denied on \\Localhost\C$\Windows\ProPatches\Patches
+    Now Copying DelProf_2k8 to Localhost
+    Now Running DelProf_2k8 on Localhost
+    Now Copying RemoveStaleVirusDefs.exe to Localhost
+    Now Running RemoveStaleVirusDefs.exe on Localhost
+    Now Cleaning Recyclebin on Localhost
+    =================================================================================================
+    ========================================AFTER CLEAN UP===========================================
+    Localhost C: has 28.1 GB free of 119.2 GB Total
+    =================================================================================================
+    End Time
+    10:47:17 04-10-2014
+    Time Spent: 00:00:02.7640000
+
+  .RelatedLinks
+    \\MHCALBSYSADPV01\SysAdmins\Scripts\Powershell_Scripts\Clean_C_Drive\C_UNDER_1.5GB.ps1
+    
+#>
 # To Suppress the Red Errors \\ Remove if you need to see errors. 
 $ErrorActionPreference = "SilentlyContinue"
 # $ErrorActionPreference = "Continue"
@@ -11,7 +86,7 @@ Write-Host "Start Time"
 (get-date).toString(‘HH:mm:ss MM-dd-yyyy’)
 
 # Static Locations
-    $strFileRepo = "(Put your Data Repo folder here like `server\c$\Folder`)"
+    $strFileRepo = "mhcalbsysadpv01\SysAdmins\Scripts\Powershell_Scripts\Clean_C_Drive"
 
 # Folders to Clean
     $strFolder_0_1 = "\\$strComputer\C$\Temp" # Per Ricky
@@ -211,7 +286,7 @@ Get-ChildItem $strFolder_180_1 -Recurse | Where-Object { $_.LastWriteTime -lt $d
 Get-ChildItem $strFolder_270_1 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_270 } | Remove-Item -Recurse -Force
 Get-ChildItem $strFolder_365_1 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_365 } | Remove-Item -Recurse -Force
 #>
-<#
+
 ### PROFILE CLEAN UP ###
 # Copy DelProf_2k8 to $strComputer
 Write-Host -foregroundcolor Cyan "Now Copying DelProf_2k8 to $strComputer"
@@ -229,7 +304,6 @@ Copy-Item "\\$strFileRepo\RemoveStaleVirusDefs.exe" "\\$strComputer\C$\Scripts\"
 # Run RemoveStaleVirusDefs.exe
 Write-Host -foregroundcolor Cyan "Now Running RemoveStaleVirusDefs.exe on $strComputer"
 Invoke-Command -ScriptBlock {c:\scripts\psexec.exe -accepteula \\$strComputer C:\scripts\RemoveStaleVirusDefs.exe} |Out-Null
-#>
 
 # Attempt to Empty the Recyclebin on the Remote Machine
 Write-Host -foregroundcolor Cyan "Now Cleaning Recyclebin on $strComputer" 
@@ -314,7 +388,7 @@ $ItemList = $ItemList.Split()
 
 foreach ($Item in $ItemList)
 {
-    if (Test-Connection $Item -Count 1; Get-WmiObject 
+    if (Test-Connection $Item -Count 1) 
     {
         RunCleanup -strComputer $Item
     }
@@ -322,4 +396,4 @@ foreach ($Item in $ItemList)
     {
         Write-Host -ForegroundColor Red "Cannot Connect to $Item"
     }
-} 
+}
