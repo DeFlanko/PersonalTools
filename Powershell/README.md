@@ -1,6 +1,4 @@
-TODO
-====
-
+### TODO
 * Make template for Help:
 ```
 <#
@@ -29,9 +27,6 @@ TODO
     DateCreated:  MMDDYYYY
     DateModified: MMDDYYYY
     Site Repo:    https://github.com/DeFlanko/
-
-  .Version
-    1.0
     
   .Examples
     -------------------------- EXAMPLE 1 --------------------------
