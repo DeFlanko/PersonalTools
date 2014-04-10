@@ -5,16 +5,16 @@ TODO
 ```
 <#
   .Synopsis
-    Short Description of what it does
+    Short description of what it does
   
   .Syntax
     How to use goes here
       
   .Description
-    Long Description in detail
+    Long description in detail
     
   .Parameters
-    "any -switches?"
+    Any -switches?
     
   .Inputs
     Any inputs?
@@ -24,7 +24,7 @@ TODO
 
   .Notes
     Author:       James DiBernardo
-    Name:         Name-Someing
+    Name:         Name-Something
     Version:      X.X.X
     DateCreated:  MMDDYYYY
     DateModified: MMDDYYYY
