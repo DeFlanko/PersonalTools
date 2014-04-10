@@ -1,8 +1,14 @@
-<#  .Description
+<#  
+    .Author
+    James DiBernardo
+    
+    .Version
+    1.0
+    
+    .Description
     A Function to look to a List of Servers in a TXT file to return Page File Values and Hard Disk values.
     
     .Example
-        
     Get-PF_and_Disk_Report "LOCATION OF .TXT FILE"
     
     Output:
