@@ -2,7 +2,7 @@ TODO
 ====
 
 * Make template for Help:
-* 
+```
 <#
   .Synopsis
     Short Description of what it does
@@ -21,6 +21,17 @@ TODO
     
   .Outputs
     What happens when you use the -PassThru ; paste that here
+
+  .Notes
+    Author:       James DiBernardo
+    Name:         Name-Someing
+    Version:      X.X.X
+    DateCreated:  MMDDYYYY
+    DateModified: MMDDYYYY
+    Site Repo:    https://github.com/DeFlanko/
+
+  .Version
+    1.0
     
   .Examples
     -------------------------- EXAMPLE 1 --------------------------
@@ -40,5 +51,5 @@ TODO
     Any Links?
     Any Related Cmdlts?
 #>
-
+```
 * Paste into each of created PS1's
