@@ -1,5 +1,4 @@
-$File = "<txt file goes here>"
-$strComputers = Get-Content $File 
+$strComputers = $Args[0]
 
 foreach ($strComputer in $strComputers)
     {
