@@ -15,7 +15,7 @@
     Paste the FQDN of the server in the inputbox.
 
   .Outputs
-    PS C:\Windows\system32> \\MHCALBSYSADPV01\SysAdmins\Scripts\Powershell_Scripts\Clean_C_Drive\C_UNDER_1.5GB.ps1
+    PS C:\Windows\system32> .\Clean-C_DRIVE.ps1
     Start Time
     10:47:14 04-10-2014
     =======================================BEFORE CLEAN UP===========================================
@@ -47,7 +47,7 @@
   .Examples
     -------------------------- EXAMPLE 1 --------------------------
 
-    PS C:\Windows\system32> \\MHCALBSYSADPV01\SysAdmins\Scripts\Powershell_Scripts\Clean_C_Drive\C_UNDER_1.5GB.ps1
+    PS C:\Windows\system32> .\Clean-C_DRIVE.ps1
     Start Time
     10:47:14 04-10-2014
     =======================================BEFORE CLEAN UP===========================================
@@ -70,7 +70,7 @@
     Time Spent: 00:00:02.7640000
 
   .RelatedLinks
-    \\MHCALBSYSADPV01\SysAdmins\Scripts\Powershell_Scripts\Clean_C_Drive\C_UNDER_1.5GB.ps1
+    
     
 #>
 # To Suppress the Red Errors \\ Remove if you need to see errors. 
@@ -85,30 +85,27 @@ $strStartTime | Out-Null
 Write-Host "Start Time"
 (get-date).toString(‘HH:mm:ss MM-dd-yyyy’)
 
-# Static Locations
-    $strFileRepo = "mhcalbsysadpv01\SysAdmins\Scripts\Powershell_Scripts\Clean_C_Drive"
-
 # Folders to Clean
-    $strFolder_0_1 = "\\$strComputer\C$\Temp" # Per Ricky
-    $strFolder_0_2 = "\\$strComputer\C$\Windows\Temp" # Per Ricky
-    $strFolder_0_3 = "\\$strComputer\C$\Windows\SoftwareDistribution\Download" # Per Ricky
-    $strFolder_0_4 = "\\$strComputer\C$\Windows\ProPatches\Patches" # Per Ricky
-    #$strFolder_0_5 = "\\$strComputer\C$\`$Recycle.bin" # Per James	-- Defined using psexec
+    $strFolder_0_1 = "\\$strComputer\C$\Temp" 
+    $strFolder_0_2 = "\\$strComputer\C$\Windows\Temp" 
+    $strFolder_0_3 = "\\$strComputer\C$\Windows\SoftwareDistribution\Download" 
+    $strFolder_0_4 = "\\$strComputer\C$\Windows\ProPatches\Patches" 
+    
         
 #Folders with files older than 7 days
-    $strFolder_7_1 = "\\$strComputer\C$\ProgramData\Microsoft Visual Studio\10.0\TraceDebugging" # Per Phillip
-    $strFolder_7_2 = "\\$strComputer\C$\inetpub\logs\LogFiles" # Per Ricky
+    $strFolder_7_1 = "\\$strComputer\C$\ProgramData\Microsoft Visual Studio\10.0\TraceDebugging" 
+    $strFolder_7_2 = "\\$strComputer\C$\inetpub\logs\LogFiles" 
 
 #Folders with files older than 180 days
-    $strFolder_180_1 = "\\$strComputer\C$\Program Files\Microsoft SQL Server\100\Setup Bootstrap\Update Cache" # Per Phillip    
+    $strFolder_180_1 = "\\$strComputer\C$\Program Files\Microsoft SQL Server\100\Setup Bootstrap\Update Cache" 
 
 #Folders with files older than 270 days
-    $strFolder_270_1 = "\\$strComputer\C$\Windows\Installer" # Per Phillip
+    $strFolder_270_1 = "\\$strComputer\C$\Windows\Installer" 
 
 #Folders with files older than 365 days
-    $strFolder_365_1 = "\\$strComputer\C$\PerfLogs" # Per James	
+    $strFolder_365_1 = "\\$strComputer\C$\PerfLogs" 
 
-# determine how far back we go based on current date
+# determine how far back we go based on current date // Just follow the format if you need a seperate amount of time
     $curr_date = Get-Date
     $max_days_7 = "-7"
     $del_date_7 = $curr_date.AddDays($max_days_7)
@@ -126,70 +123,6 @@ $disk = ([wmi]"\\$strComputer\root\cimv2:Win32_logicalDisk.DeviceID='c:'")
 Write-Host -foregroundcolor Green "=======================================BEFORE CLEAN UP==========================================="
 "$strComputer C: has {0:#.0} GB free of {1:#.0} GB Total" -f ($disk.FreeSpace/1GB),($disk.Size/1GB) | Write-Output
 Write-Host -foregroundcolor Green "================================================================================================="
-
-<#
-Write-Host -foregroundcolor Yellow "=======================================FILES TO BE CLEANED======================================="
-Write-Host -foregroundcolor Yellow "Now Identifying Sizes of Folders in $strComputer"
-
-# We identify the folders we want to Measure and their contents.
-
-$colItems_0_1 = (Get-ChildItem $strFolder_0_1 -recurse | Measure-Object -property length -sum)
-"$strFolder_0_1 is {0:N2}" -f ($colItems_0_1.sum / 1GB) + " GB"
-$colItems_0_2 = (Get-ChildItem $strFolder_0_2 -recurse | Measure-Object -property length -sum)
-"$strFolder_0_2 is {0:N2}" -f ($colItems_0_2.sum / 1GB) + " GB"
-$colItems_0_3 = (Get-ChildItem $strFolder_0_3 -recurse | Measure-Object -property length -sum)
-"$strFolder_0_3 is {0:N2}" -f ($colItems_0_3.sum / 1GB) + " GB"
-$colItems_0_4 = (Get-ChildItem $strFolder_0_4 -recurse | Measure-Object -property length -sum)
-"$strFolder_0_4 is {0:N2}" -f ($colItems_0_4.sum / 1GB) + " GB"
-$colItems_7_1 = (Get-ChildItem $strFolder_7_1 -recurse | Measure-Object -property length -sum)
-"$strFolder_7_1 is {0:N2}" -f ($colItems_7_1.sum / 1GB) + " GB"
-$colItems_7_2 = (Get-ChildItem $strFolder_7_2 -recurse | Measure-Object -property length -sum )
-"$strFolder_7_2 is {0:N2}" -f ($colItems_7_2.sum / 1GB) + " GB"
-$colItems_180_1 = (Get-ChildItem $strFolder_180_1 -recurse | Measure-Object -property length -sum)
-"$strFolder_180_1 is {0:N2}" -f ($colItems_180_1.sum / 1GB) + " GB"
-$colItems_270_1 = (Get-ChildItem $strFolde_270_1 -recurse | Measure-Object -property length -sum)
-"$strFolder_270_1 is {0:N2}" -f ($colItems_270_1.sum / 1GB) + " GB"
-$colItems_365_1 = (Get-ChildItem $strFolder_365_1 -recurse | Measure-Object -property length -sum)
-"$strFolder_365_1 is {0:N2}" -f ($colItems_365_1.sum / 1GB) + " GB"
-
-#Now we sum up the totals -- This part is not shown // Also not too sure if its needed... 
-
-$report = @(
-    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems_0_1.sum / 1GB) }
-    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems_0_2.sum / 1GB) }
-    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems_0_3.sum / 1GB) }
-    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems_0_4.sum / 1GB) }
-    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems_7_1.sum / 1GB) }
-    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems_7_2.sum / 1GB) }
-    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems_180_1.sum / 1GB) }
-    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems_270_1.sum / 1GB) }
-    New-Object psobject -Property @{ Item = "Size In GB"; Average = "{0:N2}" -f ($colItems_365_1.sum / 1GB) }
-    )
-
-# process: group by 'Item' then sum 'Average' for each group and create the Summed Output in GB
-
-$report | Group-Object Item | %{
-     New-Object psobject -Property @{
-        Item = $_.Name
-        Sum = ($_.Group | Measure-Object Average -Sum).Sum
-     }
-}
-
-Write-Host -foregroundcolor Yellow "Files to be removed on $strComputer"
-# Identifying the Files to be deleted by using the "-WhatIf"
-Remove-Item $strFolder_0_1\* -Recurse -Force -WhatIf
-Remove-Item $strFolder_0_2\* -Recurse -Force -WhatIf
-Remove-Item $strFolder_0_3\* -Recurse -Force -WhatIf
-Remove-Item $strFolder_0_4\* -Recurse -Force -WhatIf
-Get-ChildItem $strFolder_7_2 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_7 } | Remove-Item -Recurse -Force -WhatIf
-Get-ChildItem $strFolder_7_1 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_7 } | Remove-Item -Recurse -Force -WhatIf
-Get-ChildItem $strFolder_270_1 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_270 } | Remove-Item -Recurse -Force -WhatIf
-Get-ChildItem $strFolder_365_1 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_365 } | Remove-Item -Recurse -Force -WhatIf
-Get-ChildItem $strFolder_180_1 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_180 } | Remove-Item -Recurse -Force -WhatIf
-
-
-# Write-Host -foregroundcolor Yellow "================================================================================================="
-#>
 Write-Host -foregroundcolor Cyan "================================================================================================="
 # Using the same script as above, delete the contents of the folders.
  
@@ -274,36 +207,6 @@ foreach ($strFolder_365 in $strFolders_365)
         Write-Host "Access denied on $strFolder_365" -ForegroundColor Red
     }
 }
-
-<#
-Remove-Item $strFolder_0_1\* -Recurse -Force
-Remove-Item $strFolder_0_2\* -Recurse -Force
-Remove-Item $strFolder_0_3\* -Recurse -Force
-Remove-Item $strFolder_0_4\* -Recurse -Force
-Get-ChildItem $strFolder_7_2 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_7 } | Remove-Item -Recurse -Force
-Get-ChildItem $strFolder_7_1 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_7 } | Remove-Item -Recurse -Force
-Get-ChildItem $strFolder_180_1 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_180 } | Remove-Item -Recurse -Force
-Get-ChildItem $strFolder_270_1 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_270 } | Remove-Item -Recurse -Force
-Get-ChildItem $strFolder_365_1 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_365 } | Remove-Item -Recurse -Force
-#>
-
-### PROFILE CLEAN UP ###
-# Copy DelProf_2k8 to $strComputer
-Write-Host -foregroundcolor Cyan "Now Copying DelProf_2k8 to $strComputer"
-Copy-Item "\\$strFileRepo\DelProf_2k8.exe" "\\$strComputer\C$\Scripts\" |Out-Null
-
-# Run DelProf_2k8
-Write-Host -foregroundcolor Cyan "Now Running DelProf_2k8 on $strComputer"
-Invoke-Command -ScriptBlock {c:\scripts\psexec.exe -accepteula \\$strComputer C:\scripts\delprof_2k8.exe} |Out-Null
-
-### SEP CLEAN UP ###
-# Copy RemoveStaleVirusDefs.exe to $strComputer
-Write-Host -foregroundcolor Cyan "Now Copying RemoveStaleVirusDefs.exe to $strComputer"
-Copy-Item "\\$strFileRepo\RemoveStaleVirusDefs.exe" "\\$strComputer\C$\Scripts\" |Out-Null
-
-# Run RemoveStaleVirusDefs.exe
-Write-Host -foregroundcolor Cyan "Now Running RemoveStaleVirusDefs.exe on $strComputer"
-Invoke-Command -ScriptBlock {c:\scripts\psexec.exe -accepteula \\$strComputer C:\scripts\RemoveStaleVirusDefs.exe} |Out-Null
 
 # Attempt to Empty the Recyclebin on the Remote Machine
 Write-Host -foregroundcolor Cyan "Now Cleaning Recyclebin on $strComputer" 
