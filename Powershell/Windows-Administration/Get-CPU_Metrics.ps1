@@ -1,4 +1,54 @@
+<#
+.Synopsis
+    To get an output of active running processes on remote servers in order of highest to lowest CPU %
+
+.Syntax
+    Run the PS1 and paste the Server FQDN in the inputbox
+
+.Inputs
+    Paste the FQDN of the server in the inputbox.
+
+.Outputs
+    Start Time
+    20:06:29 04-25-2014
+    ============== Localhost CLI Task Manager ==============
+
+    Name                         CPU%   PID UserID                    
+    ----                         ----   --- ------                    
+    AeXNSAgent.exe                 55  2300 NT AUTHORITY\SYSTEM       
+    SearchIndexer.exe              30  5824 NT AUTHORITY\SYSTEM       
+    SearchProtocolHost.exe         18 12924 NT AUTHORITY\SYSTEM       
+    SearchFilterHost.exe           12  4688 NT AUTHORITY\SYSTEM       
+    WmiPrvSE.exe                    6 11516 NT AUTHORITY\LOCAL SERVICE
+    System Idle Process    {100, 100}     0 \                         
+
+
+    ===========================================================
+    End Time
+    20:07:25 04-25-2014
+    Time Spent: 00:00:56.2970000
+
+.Notes
+    Author:       James DiBernardo
+    Name:         Get-CPU-Metrics.ps1
+    Version:      1.0.0
+    DateCreated:  04252014
+    DateModified: -
+
+.Examples
+    n/a
+    
+#>
+# To Suppress the Red Errors to make Output Cleaner looking \\ Remove if you need to see errors. 
+$ErrorActionPreference = "SilentlyContinue"
+# $ErrorActionPreference = "Continue"
+
 function Get_CPU ($strComputer){
+# Add in a Time Stamp
+$strStartTime = Get-Date
+$strStartTime | Out-Null
+Write-Host "Start Time"
+(get-date).toString(‘HH:mm:ss MM-dd-yyyy’)
 Write-Host -ForegroundColor Green "============== $StrComputer CLI Task Manager =============="
 $Taskman = Get-WmiObject Win32_Process -ComputerName $StrComputer
 foreach ($p in $Taskman){
@@ -9,6 +59,12 @@ foreach ($p in $Taskman){
     }
 $Taskman | Sort-Object CPU% -Descending | Where-Object CPU% -GT "0"| Format-Table Name, CPU%, PID, UserID -AutoSize 
 Write-Host -ForegroundColor Green "==========================================================="
+# Add in a Time Stamp
+$strEndTime = Get-Date
+$strEndTime | Out-Null
+Write-Host "End Time"
+(get-date).toString(‘HH:mm:ss MM-dd-yyyy’)
+Write-Host -ForegroundColor Yellow "Time Spent: $($strEndTime - $strStartTime)"
 }
 
 ## Lets Build an InputBox
@@ -80,4 +136,4 @@ foreach ($Item in $ItemList)
     {
         Write-Host -ForegroundColor Red "Cannot Connect to $Item"
     }
-} 
+}
