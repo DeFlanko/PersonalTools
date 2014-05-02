@@ -19,8 +19,8 @@ if (Ping-Server($strComputer)) {
     write-host -foregroundcolor green "====== $strComputer $Groupname BEFORE ====="
     ListAdministrators $Group
     write-host -foregroundcolor green "====== BEFORE ====="
-# Even though we are adding the AD account
-# It is being added to the local computer and so we will need to use WinNT: provider
+# Even though we are removing the AD account
+# It is being removed from the local computer and so we will need to use WinNT: provider
 ###### Besure to modify your Domain here ##### 
     $Group.remove("WinNT://" + "MMC" + "/" + $ItemUser) 
     write-host -foregroundcolor green "====== $strComputer $Groupname AFTER ====="
