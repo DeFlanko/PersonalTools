@@ -7,7 +7,7 @@ function PowerLogin1 ($UserName,$Password,$ServerName,$Application)
     $ICA.Username = $UserName
     $ICA.InitialProgram = "#$Application"
     $ICA.SetProp("Password",$Password) 
-    $ICA.Domain = "mmc"
+    $ICA.Domain = "YOUR DOMAIN GOES HERE"
     $ICA.Launch = $true
     $ICA.Connect()
 }
