@@ -3,13 +3,11 @@ Function ListMembers($Group){
     $members= $Group.psbase.invoke("Members") | %{$_.GetType().InvokeMember("Name", 'GetProperty', $null, $_, $null)}
     $members
     }
-
 Function Ping-Server{
     Param([string]$srv)
     $pingresult = Get-WmiObject Win32_PingStatus -Filter "Address='$srv'"
     if($pingresult.StatusCode -eq 0) {$true} else {$false}
     }
-
 Function SelectGroup{
 [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
 [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing") 
@@ -81,10 +79,8 @@ if ($result -eq [System.Windows.Forms.DialogResult]::OK -and $objListBox.Selecte
 }
 }
 
-
-
 ## Get-UsersOfGroup
-function Get_LocalAdmin ($strComputer){
+function Get_List_Of_Users ($strComputer){
 if (Ping-Server($strComputer))
     { 
     $computer = [ADSI]("WinNT://" + $strComputer + ",computer")
@@ -159,14 +155,29 @@ function GetInput ($DefaultText = "",$LabelMessage = "Please enter the informati
 $ItemList = GetInput -LabelMessage "Input FQDN of Servers to Process:" -MultiLine $true
 $ItemList = $ItemList.Split()
 
-foreach ($Item in $ItemList)
-{
-    if (Test-Connection $Item -Count 1) 
-    {
-        Get_LocalAdmin -strComputer $Item
+foreach ($Item in $ItemList){
+    If($Item){
+        Try{
+            If (Test-Connection $Item -Count 1 -ErrorAction SilentlyContinue){
+                Add_To_Group -strComputer $Item
+                }
+            Else{
+                Write-Host -ForegroundColor Magenta "======Ping Exception thrown on $Item ====="
+                $Error[0].ToString()
+                Write-Host -ForegroundColor Magenta "========^^^======="
+                }
+            }
+        Catch [System.Management.Automation.PSArgumentException]{
+            Write-Host -ForegroundColor Magenta "======Powershell Exception thrown on $Item ====="
+            $ErrorMessage1 = $_.PSArgumentException.Message | Out-Host
+            $FailedItem1 = $_.PSArgumentException.ItemName | Out-Host
+            Write-Host -ForegroundColor Magenta "========^^^======="
+            }
+        Catch [System.Exception]{
+            Write-Host -ForegroundColor Magenta "======System Exception thrown on $Item ====="
+            $ErrorMessage2 = $_.Exception.Message | Out-Host
+            $FailedItem2 = $_.Exception.ItemName | Out-Host
+            Write-Host -ForegroundColor Magenta "========^^^======="
+            }
+        }
     }
-    Else
-    {
-        Write-Host -ForegroundColor Red "Cannot Connect to $Item"
-    }
-} 
