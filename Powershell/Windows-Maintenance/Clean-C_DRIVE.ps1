@@ -15,7 +15,7 @@
     Paste the FQDN of the server in the inputbox.
 
   .Outputs
-    PS C:\Windows\system32> .\Clean-C_DRIVE.ps1
+    PS C:\Windows\system32> \\MHCALBSYSADPV01\SysAdmins\Scripts\Powershell_Scripts\Clean_C_Drive\C_UNDER_1.5GB.ps1
     Start Time
     10:47:14 04-10-2014
     =======================================BEFORE CLEAN UP===========================================
@@ -40,14 +40,17 @@
   .Notes
     Author:       James DiBernardo
     Name:         C_UNDER_1.5GB.ps1
-    Version:      1.0.0
-    DateCreated:  04012014
-    DateModified: 04102014
+    Version:      1.0.1
+    DateCreated:  04/01/2014
+    DateModified: 05/07/2014
+    Whats New:
+        - Removed Delprof_2k8.exe 
+        + Added Delprof2.exe and a custom exclusions list that match that of ProfileCleanup.bat
     
   .Examples
     -------------------------- EXAMPLE 1 --------------------------
 
-    PS C:\Windows\system32> .\Clean-C_DRIVE.ps1
+    PS C:\Windows\system32> \\MHCALBSYSADPV01\SysAdmins\Scripts\Powershell_Scripts\Clean_C_Drive\C_UNDER_1.5GB.ps1
     Start Time
     10:47:14 04-10-2014
     =======================================BEFORE CLEAN UP===========================================
@@ -70,42 +73,44 @@
     Time Spent: 00:00:02.7640000
 
   .RelatedLinks
-    
+    \\MHCALBSYSADPV01\SysAdmins\Scripts\Powershell_Scripts\Clean_C_Drive\C_UNDER_1.5GB.ps1
     
 #>
 # To Suppress the Red Errors \\ Remove if you need to see errors. 
 $ErrorActionPreference = "SilentlyContinue"
 # $ErrorActionPreference = "Continue"
 
-function RunCleanup ($strComputer)
-{
+function RunCleanup ($strComputer){
 # Add in a Time Stamp
 $strStartTime = Get-Date
 $strStartTime | Out-Null
 Write-Host "Start Time"
 (get-date).toString(‘HH:mm:ss MM-dd-yyyy’)
 
+# Static Locations
+    $strFileRepo = "mhcalbsysadpv01\SysAdmins\Scripts\Powershell_Scripts\Clean_C_Drive"
+
 # Folders to Clean
-    $strFolder_0_1 = "\\$strComputer\C$\Temp" 
-    $strFolder_0_2 = "\\$strComputer\C$\Windows\Temp" 
-    $strFolder_0_3 = "\\$strComputer\C$\Windows\SoftwareDistribution\Download" 
-    $strFolder_0_4 = "\\$strComputer\C$\Windows\ProPatches\Patches" 
-    
+    $strFolder_0_1 = "\\$strComputer\C$\Temp" # Per Ricky
+    $strFolder_0_2 = "\\$strComputer\C$\Windows\Temp" # Per Ricky
+    $strFolder_0_3 = "\\$strComputer\C$\Windows\SoftwareDistribution\Download" # Per Ricky
+    $strFolder_0_4 = "\\$strComputer\C$\Windows\ProPatches\Patches" # Per Ricky
+    #$strFolder_0_5 = "\\$strComputer\C$\`$Recycle.bin" # Per James	-- Defined using psexec
         
 #Folders with files older than 7 days
-    $strFolder_7_1 = "\\$strComputer\C$\ProgramData\Microsoft Visual Studio\10.0\TraceDebugging" 
-    $strFolder_7_2 = "\\$strComputer\C$\inetpub\logs\LogFiles" 
+    $strFolder_7_1 = "\\$strComputer\C$\ProgramData\Microsoft Visual Studio\10.0\TraceDebugging" # Per Phillip
+    $strFolder_7_2 = "\\$strComputer\C$\inetpub\logs\LogFiles" # Per Ricky
 
 #Folders with files older than 180 days
-    $strFolder_180_1 = "\\$strComputer\C$\Program Files\Microsoft SQL Server\100\Setup Bootstrap\Update Cache" 
+    $strFolder_180_1 = "\\$strComputer\C$\Program Files\Microsoft SQL Server\100\Setup Bootstrap\Update Cache" # Per Phillip    
 
 #Folders with files older than 270 days
-    $strFolder_270_1 = "\\$strComputer\C$\Windows\Installer" 
+    $strFolder_270_1 = "\\$strComputer\C$\Windows\Installer" # Per Phillip
 
 #Folders with files older than 365 days
-    $strFolder_365_1 = "\\$strComputer\C$\PerfLogs" 
+    $strFolder_365_1 = "\\$strComputer\C$\PerfLogs" # Per James	
 
-# determine how far back we go based on current date // Just follow the format if you need a seperate amount of time
+# determine how far back we go based on current date
     $curr_date = Get-Date
     $max_days_7 = "-7"
     $del_date_7 = $curr_date.AddDays($max_days_7)
@@ -135,82 +140,85 @@ $strFolders_0 += $strFolder_0_2
 $strFolders_0 += $strFolder_0_3
 $strFolders_0 += $strFolder_0_4
 
-foreach ($strFolder_0 in $strFolders_0)
-{
+foreach ($strFolder_0 in $strFolders_0){
     if (Test-Path $strFolder_0)
-    {
+        {
         Remove-Item $strFolder_0\* -Recurse -Force
+        }
+    Else{
+        Write-host $Error[0].ToString() -ForegroundColor Red
+        }
     }
-    Else
-    {
-        Write-Host "Access denied on $strFolder_0" -ForegroundColor Red
-    }
-}
 
 $strFolders_7 = @()
 $strFolders_7 += $strFolder_7_1
 $strFolders_7 += $strFolder_7_2
 
-foreach ($strFolder_7 in $strFolders_7)
-{
-    if (Test-Path $strFolder_7)
-    {
+foreach ($strFolder_7 in $strFolders_7){
+    if (Test-Path $strFolder_7){
         Get-ChildItem $strFolder_7 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_7 } | Remove-Item -Recurse -Force
+        }
+    Else{
+        Write-host $Error[0].ToString() -ForegroundColor Red
+        }
     }
-    Else
-    {
-        Write-Host "Access denied on $strFolder_7" -ForegroundColor Red
-    }
-}
 
 $strFolders_180 = @()
 $strFolders_180 += $strFolder_180_1
 
-foreach ($strFolder_180 in $strFolders_180)
-{
-    if (Test-Path $strFolder_180)
-    {
+foreach ($strFolder_180 in $strFolders_180){
+    if (Test-Path $strFolder_180){
         Get-ChildItem $strFolder_180 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_180 } | Remove-Item -Recurse -Force
+        }
+    Else{
+        Write-host $Error[0].ToString() -ForegroundColor Red
+        }
     }
-    Else
-    {
-        Write-Host "Access denied on $strFolder_180" -ForegroundColor Red
-    }
-}
 
 $strFolders_270 = @()
 $strFolders_270 += $strFolder_270_1
 
-foreach ($strFolder_270 in $strFolders_270)
-{
-    if (Test-Path $strFolder_270)
-    {
+foreach ($strFolder_270 in $strFolders_270){
+    if (Test-Path $strFolder_270){
         Get-ChildItem $strFolder_270 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_270 } | Remove-Item -Recurse -Force
+        }
+    Else{
+        Write-host $Error[0].ToString() -ForegroundColor Red
+        }
     }
-    Else
-    {
-        Write-Host "Access denied on $strFolder_270" -ForegroundColor Red
-    }
-}
 
 $strFolders_365 = @()
 $strFolders_365 += $strFolder_365_1
-
-foreach ($strFolder_365 in $strFolders_365)
-{
-    if (Test-Path $strFolder_365)
-    {
+foreach ($strFolder_365 in $strFolders_365){
+    if (Test-Path $strFolder_365){
         Get-ChildItem $strFolder_365 -Recurse | Where-Object { $_.LastWriteTime -lt $del_date_365 } | Remove-Item -Recurse -Force
-    }
-    Else
-    {
-        Write-Host "Access denied on $strFolder_365" -ForegroundColor Red
-    }
-}
+        }
+    Else{
+        Write-host $Error[0].ToString() -ForegroundColor Red
+        }
+
+### PROFILE CLEAN UP ###
+# Copy Delprof2.exe to System32 folder
+Write-Host -foregroundcolor Cyan "Now Copying Delprof2.exe to $strComputer"
+Copy-Item "\\$strFileRepo\delprof2.exe" "\\$strComputer\C$\Windows\System32\" |Out-Null
+
+# Run Delprof2.exe with variables (Same as ProfileCleanUp.bat)
+# delprof2.exe /ed:admin* /ed:"All Users" /ed:Ctx_StreamingSvc /ed:Ctx_ConfigMgr /ed:ctx_cpsvcuser /ed:ctx_cpuuser /ed:Default /ed:"Default User" /ed:huynhtim /ed:Public  /d:21 /u
+Write-Host -foregroundcolor Cyan "Now Running Delprof2.exe with custom exclusions on $strComputer" 
+Invoke-Command -ScriptBlock {c:\scripts\psexec.exe -accepteula \\$strComputer delprof2.exe /ed:admin* /ed:"All Users" /ed:Ctx_StreamingSvc /ed:Ctx_ConfigMgr /ed:ctx_cpsvcuser /ed:ctx_cpuuser /ed:Default /ed:"Default User" /ed:huynhtim /ed:Public  /d:30 /u} | Out-Null
+
+### SEP CLEAN UP ###
+# Copy RemoveStaleVirusDefs.exe to $strComputer
+Write-Host -foregroundcolor Cyan "Now Copying RemoveStaleVirusDefs.exe to $strComputer"
+Copy-Item "\\$strFileRepo\RemoveStaleVirusDefs.exe" "\\$strComputer\C$\Scripts\" |Out-Null
+
+# Run RemoveStaleVirusDefs.exe
+Write-Host -foregroundcolor Cyan "Now Running RemoveStaleVirusDefs.exe on $strComputer"
+Invoke-Command -ScriptBlock {c:\scripts\psexec.exe -accepteula \\$strComputer C:\scripts\RemoveStaleVirusDefs.exe} |Out-Null
 
 # Attempt to Empty the Recyclebin on the Remote Machine
 Write-Host -foregroundcolor Cyan "Now Cleaning Recyclebin on $strComputer" 
-Invoke-Command -ScriptBlock {c:\scripts\psexec.exe -accepteula \\$strComputer cmd.exe /c del /q /s /f c:\`$recycle.bin} | Out-Null
+Invoke-Command -ScriptBlock {c:\scripts\psexec.exe -accepteula \\$strComputer cmd.exe /c del /q /s /f c:\`$recycle.bin} |Out-Null 
 
 Write-Host -foregroundcolor Cyan "================================================================================================="
 
@@ -228,6 +236,7 @@ $strEndTime | Out-Null
 Write-Host "End Time"
 (get-date).toString(‘HH:mm:ss MM-dd-yyyy’)
 Write-Host -ForegroundColor Yellow "Time Spent: $($strEndTime - $strStartTime)"
+}
 }
 
 #Functions
@@ -289,14 +298,15 @@ function GetInput ($DefaultText = "",$LabelMessage = "Please enter the informati
 $ItemList = GetInput -LabelMessage "Input FQDN of Servers to Process:" -MultiLine $true
 $ItemList = $ItemList.Split()
 
-foreach ($Item in $ItemList)
-{
-    if (Test-Connection $Item -Count 1) 
-    {
-        RunCleanup -strComputer $Item
-    }
-    Else
-    {
-        Write-Host -ForegroundColor Red "Cannot Connect to $Item"
-    }
-}
+foreach ($Item in $ItemList){
+    If($Item){
+        If (Test-Connection $Item -Count 1 -ErrorAction SilentlyContinue){
+            RunCleanup -strComputer $Item
+                }
+            Else{
+                Write-Host -ForegroundColor Magenta "======Ping Exception thrown on $Item ====="
+                $Error[0].ToString()
+                Write-Host -ForegroundColor Magenta "========^^^======="
+                }
+            }
+        }
