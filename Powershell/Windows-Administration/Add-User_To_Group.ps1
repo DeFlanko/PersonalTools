@@ -294,17 +294,31 @@ $ItemUser = GetInputUser -LabelMessage "Input a User/Security group to Add:" -Mu
 $ItemList = GetInputServer -LabelMessage "Input FQDN of Servers to Process:" -MultiLine $true
 $DomainName =[string](SelectDomain)
 $GroupName = [string](SelectGroup)
-
 $ItemList = $ItemList.Split()
 
-foreach ($Item in $ItemList)
-{
-    if (Test-Connection $Item -Count 1) 
-    {
-        Add_To_Group -strComputer $Item 
+foreach ($Item in $ItemList){
+    If($Item){
+        Try{
+            If (Test-Connection $Item -Count 1 -ErrorAction SilentlyContinue){
+                Add_To_Group -strComputer $Item
+                }
+            Else{
+                Write-Host -ForegroundColor Magenta "======Ping Exception thrown on $Item ====="
+                $Error[0].ToString()
+                Write-Host -ForegroundColor Magenta "========^^^======="
+                }
+            }
+        Catch [System.Management.Automation.PSArgumentException]{
+            Write-Host -ForegroundColor Magenta "======Powershell Exception thrown on $Item ====="
+            $ErrorMessage1 = $_.PSArgumentException.Message | Out-Host
+            $FailedItem1 = $_.PSArgumentException.ItemName | Out-Host
+            Write-Host -ForegroundColor Magenta "========^^^======="
+            }
+        Catch [System.Exception]{
+            Write-Host -ForegroundColor Magenta "======System Exception thrown on $Item ====="
+            $ErrorMessage2 = $_.Exception.Message | Out-Host
+            $FailedItem2 = $_.Exception.ItemName | Out-Host
+            Write-Host -ForegroundColor Magenta "========^^^======="
+            }
+        }
     }
-    Else
-    {
-        Write-Host -ForegroundColor Red "Cannot Connect to $Item"
-    }
-} 
