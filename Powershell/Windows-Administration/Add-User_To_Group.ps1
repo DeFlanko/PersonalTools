@@ -161,8 +161,6 @@ if ($result -eq [System.Windows.Forms.DialogResult]::OK -and $objListBox.Selecte
 function Add_To_Group ($strComputer){ 
 if (Ping-Server($strComputer)) { 
     $computer = [ADSI]("WinNT://" + $strComputer + ",computer")
-    $DomainName =[string](SelectDomain)
-    $GroupName = [string](SelectGroup)
     $Group = $computer.psbase.children.find($Groupname)
 # This will list what’s currently in Administrator Group so you can verify the result
     write-host -foregroundcolor green "====== $strComputer $Groupname BEFORE ====="
@@ -294,6 +292,8 @@ function GetInputServer ($DefaultText = "",$LabelMessage = "Please enter the inf
 
 $ItemUser = GetInputUser -LabelMessage "Input a User/Security group to Add:" -MultiLine $false
 $ItemList = GetInputServer -LabelMessage "Input FQDN of Servers to Process:" -MultiLine $true
+$DomainName =[string](SelectDomain)
+$GroupName = [string](SelectGroup)
 
 $ItemList = $ItemList.Split()
 
