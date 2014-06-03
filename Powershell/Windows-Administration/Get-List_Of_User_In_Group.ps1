@@ -84,7 +84,6 @@ function Get_List_Of_Users ($strComputer){
 if (Ping-Server($strComputer))
     { 
     $computer = [ADSI]("WinNT://" + $strComputer + ",computer")
-    $GroupName = [string](SelectGroup)
     $Group = $computer.psbase.children.find($Groupname)
     write-host -foregroundcolor green "====== $strComputer $Groupname List ====="
     ListMembers $Group
@@ -154,12 +153,13 @@ function GetInput ($DefaultText = "",$LabelMessage = "Please enter the informati
 
 $ItemList = GetInput -LabelMessage "Input FQDN of Servers to Process:" -MultiLine $true
 $ItemList = $ItemList.Split()
+$GroupName = [string](SelectGroup)
 
 foreach ($Item in $ItemList){
     If($Item){
         Try{
             If (Test-Connection $Item -Count 1 -ErrorAction SilentlyContinue){
-                Add_To_Group -strComputer $Item
+                Get_List_Of_Users -strComputer $Item
                 }
             Else{
                 Write-Host -ForegroundColor Magenta "======Ping Exception thrown on $Item ====="
