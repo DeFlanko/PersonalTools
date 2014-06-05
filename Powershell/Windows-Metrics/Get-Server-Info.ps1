@@ -18,7 +18,7 @@
     One or more PSObjects with info about Page File Size, RAM, and Hard Disk to the Console window as well as to .\Export.csv
 #>
 
-function Get-PF_and_Disk_Report ($Server){
+function Get-Server_Info ($Server){
     # Each Variable is its own call for the spreadsheet.
     $OSVersion = Get-WmiObject -ComputerName $Server Win32_OperatingSystem | % {$_.Version}
     $PhysicalMem = Get-WmiObject -ComputerName $Server Win32_ComputerSystem | % {$_.TotalPhysicalMemory}
@@ -184,7 +184,7 @@ foreach ($Item in $ItemList){
     If($Item){
         Try{
             If (Test-Connection $Item -Count 1 -ErrorAction SilentlyContinue){
-                Get-PF_and_Disk_Report -Server $Item
+                Get-Server_Info -Server $Item
                 }
             Else{
                 Write-Host -ForegroundColor Magenta "======Ping Exception thrown on $Item ====="
