@@ -5,6 +5,6 @@
 
 Some tools/scripts I use and wanted to share with the world. 
 
-### [Disclaimer](Disclaimer.md)
+### [Disclaimer (WTFPL)](Disclaimer.md)
 
   [1]: http://www.github.com/DeFlanko
