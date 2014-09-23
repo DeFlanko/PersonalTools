@@ -1,0 +1,7 @@
+	if 
+	//months
+	(datediff('yyyy',{PATIENT.BIRTH_DATE},currentdate)-(if datepart('y',currentdate)>datepart('y',{PATIENT.BIRTH_DATE}) then 0 else 1))<2 then
+	totext(datediff('m',{PATIENT.BIRTH_DATE},currentdate),0,'') & ' months'
+	else
+	//years
+	totext((datediff('yyyy',{PATIENT.BIRTH_DATE},currentdate)-(if datepart('y',currentdate)>datepart('y',{PATIENT.BIRTH_DATE}) then 0 else 1)),0,'') & ' years'
