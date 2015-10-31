@@ -12,9 +12,10 @@ Dim strFilename As String
         ' Just saves file as teh worksheet name  
         strFileName = wbThis.Path & "/" & ws.Name
         ' Saves file with Worksheet name and This Month and Year in file name
-'       strFilename = wbThis.Path & "/" & ws.Name & MonthName(Month(Now()), True) & Year(Now())
+        'strFilename = wbThis.Path & "/" & ws.Name & MonthName(Month(Now()), True) & Year(Now())
         ' Saves file with Worksheet name and Manually entered Month and THIS Year in file name
-'       strFilename = wbThis.Path & "/" & ws.Name & "MAR" & Year(Now())
+        'strFilename = wbThis.Path & "/" & ws.Name & "MAR" & Year(Now())
+        strFilename = wbThis.Path & "/" & ws.Name & "_CUSTOM_NAME_HERE.xlsx"
         ws.Copy
         Set wbNew = ActiveWorkbook
         ' Uncomment for worksheet renaming in the new file. Same Logic as the file name saving. 
